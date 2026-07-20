@@ -12,6 +12,8 @@ import { LocationsPage } from '../features/bible/LocationsPage';
 import { OrganizationsPage } from '../features/bible/OrganizationsPage';
 import { RulesPage } from '../features/bible/RulesPage';
 import { TermsPage } from '../features/bible/TermsPage';
+import { AuthorStylePage } from '../features/style/AuthorStylePage';
+import { IdeasPage } from '../features/ideas/IdeasPage';
 import { ToastContainer } from '../shared/ui/Toast';
 
 export function App() {
@@ -56,6 +58,10 @@ export function App() {
           <Route path="series/:seriesId/bible/organizations" element={<OrganizationsPage />} />
           <Route path="series/:seriesId/bible/rules" element={<RulesPage />} />
           <Route path="series/:seriesId/bible/terms" element={<TermsPage />} />
+
+          {/* Series */}
+          <Route path="series/:seriesId/style" element={<AuthorStylePage />} />
+          <Route path="books/:bookId/ideas" element={<IdeasPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
