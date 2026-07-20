@@ -7,6 +7,11 @@ import { ScenePage } from '../features/editor/ScenePage';
 import { MatrixPage } from '../features/planning/MatrixPage';
 import { TimelinePage } from '../features/planning/TimelinePage';
 import { StatisticsPage } from '../features/planning/StatisticsPage';
+import { CharactersPage } from '../features/bible/CharactersPage';
+import { LocationsPage } from '../features/bible/LocationsPage';
+import { OrganizationsPage } from '../features/bible/OrganizationsPage';
+import { RulesPage } from '../features/bible/RulesPage';
+import { TermsPage } from '../features/bible/TermsPage';
 import { ToastContainer } from '../shared/ui/Toast';
 
 export function App() {
@@ -44,6 +49,13 @@ export function App() {
           <Route path="books/:bookId/planning/matrix" element={<MatrixPage />} />
           <Route path="books/:bookId/planning/timeline" element={<TimelinePage />} />
           <Route path="books/:bookId/planning/stats" element={<StatisticsPage />} />
+
+          {/* World Bible */}
+          <Route path="series/:seriesId/bible/characters" element={<CharactersPage />} />
+          <Route path="series/:seriesId/bible/locations" element={<LocationsPage />} />
+          <Route path="series/:seriesId/bible/organizations" element={<OrganizationsPage />} />
+          <Route path="series/:seriesId/bible/rules" element={<RulesPage />} />
+          <Route path="series/:seriesId/bible/terms" element={<TermsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
