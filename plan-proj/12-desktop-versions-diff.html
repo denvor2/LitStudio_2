@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Desktop versions diff</title>
+<style>
+  :root {
+    --surface-2: #ffffff; --surface-1: #f4f3ef; --page-bg: #ece9e2;
+    --border: rgba(20,20,18,0.12); --border-strong: rgba(20,20,18,0.24);
+    --border-danger: rgba(163,45,45,0.4); --border-warning: rgba(133,79,11,0.4);
+    --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-muted: #8a8980;
+    --text-danger: #a32d2d; --text-warning: #854f0b; --text-success: #0f6e56; --text-accent: #185fa5;
+    --bg-accent: #e6f1fb; --bg-danger: #fcebeb; --bg-warning: #faeeda; --bg-success: #eaf3de;
+    --fill-secondary: rgba(20,20,18,0.06); --fill-warning: #ef9f27; --fill-danger: #e24b4a;
+    --radius: 8px; --shadow-md: 0 2px 8px rgba(0,0,0,0.08); --shadow-lg: 0 8px 24px rgba(0,0,0,0.14);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-voice: Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page-bg); font-family: var(--font-sans); color: var(--text-primary); padding: 24px 12px; }
+  button { font-family: var(--font-sans); cursor: pointer; }
+  textarea, input, select { font-family: var(--font-sans); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+
+</head><body>
+
+<div style="background: var(--surface-1); border-radius: 12px; padding: 16px;">
+<div style="background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden;">
+<div style="padding: 10px 16px; border-bottom: 0.5px solid var(--border); font-size: 13px; font-weight: 500;">Версии · Scene 5</div>
+<div style="display: flex; min-height: 340px;">
+<div style="width: 210px; border-right: 0.5px solid var(--border);">
+<div style="padding: 8px 12px 4px; font-size: 10px; color: var(--text-muted); font-weight: 500;">СЕГОДНЯ</div>
+<div style="padding: 8px 12px; background: var(--bg-accent); display: flex; gap: 8px;"><i class="ti ti-clock" style="font-size:14px;color:var(--text-accent);"></i><div><p style="font-size:12px;font-weight:500;color:var(--text-accent);margin:0;">14:32 · автосохранение</p><p style="font-size:11px;color:var(--text-muted);margin:0;">текущая</p></div></div>
+<div style="padding: 8px 12px; display: flex; gap: 8px;"><i class="ti ti-flag" style="font-size:14px;color:var(--text-secondary);"></i><p style="font-size:12px;margin:0;">13:50 · статус → На редактуре</p></div>
+<div style="padding: 8px 12px 4px; font-size: 10px; color: var(--text-muted); font-weight: 500; border-top: 0.5px solid var(--border);">ВЧЕРА</div>
+<div style="padding: 8px 12px; display: flex; gap: 8px; border: 1px solid var(--text-accent); border-radius: var(--radius); margin: 0 6px;"><i class="ti ti-door-exit" style="font-size:14px;color:var(--text-secondary);"></i><p style="font-size:12px;font-weight:500;margin:0;">19:04 · закрытие приложения</p></div>
+</div>
+<div style="flex: 1; display: flex; flex-direction: column;">
+<div style="padding: 8px 16px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; gap: 10px;"><span style="font-size:11px;color:var(--text-muted);">Сравнение: вчера 19:04 → сейчас</span><div style="margin-left:auto;display:flex;gap:6px;"><button style="font-size:11px;padding:4px 8px;border-radius:var(--radius);">Откат по шагам</button><button style="font-size:11px;padding:4px 8px;border-radius:var(--radius);">Откат по времени</button></div></div>
+<div style="padding: 16px 20px; font-family: var(--font-voice); font-size: 14px; line-height: 1.8;">Майкл смотрел на экран, и <span style="background:var(--bg-danger);color:var(--text-danger);text-decoration:line-through;">глаза его широко раскрылись</span> <span style="background:var(--bg-success);color:var(--text-success);">по спине пробежал холод</span> прежде, чем он успел это осознать.</div>
+<div style="margin-top: auto; padding: 10px 16px; border-top: 0.5px solid var(--border); display: flex; justify-content: flex-end; gap: 8px;"><button style="font-size:12px;padding:6px 12px;border-radius:var(--radius);">Закрыть</button><button style="font-size:12px;padding:6px 12px;border-radius:var(--radius);background:var(--bg-danger);color:var(--text-danger);border:none;">Откатить</button></div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Mobile character card</title>
+<style>
+  :root {
+    --surface-2: #ffffff; --surface-1: #f4f3ef; --page-bg: #ece9e2;
+    --border: rgba(20,20,18,0.12); --border-strong: rgba(20,20,18,0.24);
+    --border-danger: rgba(163,45,45,0.4); --border-warning: rgba(133,79,11,0.4);
+    --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-muted: #8a8980;
+    --text-danger: #a32d2d; --text-warning: #854f0b; --text-success: #0f6e56; --text-accent: #185fa5;
+    --bg-accent: #e6f1fb; --bg-danger: #fcebeb; --bg-warning: #faeeda; --bg-success: #eaf3de;
+    --fill-secondary: rgba(20,20,18,0.06); --fill-warning: #ef9f27; --fill-danger: #e24b4a;
+    --radius: 8px; --shadow-md: 0 2px 8px rgba(0,0,0,0.08); --shadow-lg: 0 8px 24px rgba(0,0,0,0.14);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-voice: Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page-bg); font-family: var(--font-sans); color: var(--text-primary); padding: 24px 12px; }
+  button { font-family: var(--font-sans); cursor: pointer; }
+  textarea, input, select { font-family: var(--font-sans); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+
+</head><body>
+
+<div style="background: var(--surface-1); border-radius: 12px; padding: 12px; max-width: 380px;">
+<div style="background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden;">
+<div style="padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border);"><div style="display:flex;align-items:center;gap:10px;"><i class="ti ti-chevron-left" style="font-size:20px;color:var(--text-secondary);"></i><div><p style="font-size:15px;font-weight:500;margin:0;">Майкл</p><p style="font-size:12px;color:var(--text-muted);margin:0;">Тералия · Библия мира › Персонажи</p></div></div><i class="ti ti-dots" style="font-size:18px;color:var(--text-muted);"></i></div>
+<div style="padding: 14px;">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;"><div style="width:38px;height:38px;border-radius:50%;background:#EEEDFE;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#26215C;">М</div><div style="display:flex;gap:6px;"><span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--fill-secondary);color:var(--text-secondary);">Серия</span><span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--fill-secondary);color:var(--text-secondary);">Главный герой</span></div></div>
+<p style="font-size:11px;color:var(--text-muted);font-weight:500;margin:0 0 4px;">ВАРИАНТЫ ИМЕНИ</p>
+<p style="font-size:13px;color:var(--text-secondary);line-height:1.5;margin:0 0 12px;">Майкл — офиц. · Майк — неформально · Грэм — фамилия в документах</p>
+<p style="font-size:11px;color:var(--text-muted);font-weight:500;margin:0 0 6px;">АРКА</p>
+<div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;">
+<div style="flex:0 0 90px;border:0.5px solid var(--border);border-radius:var(--radius);padding:8px;"><p style="font-size:10px;color:var(--text-accent);font-weight:500;margin:0 0 2px;">ЗАВЯЗКА</p><p style="font-size:12px;margin:0;">Scene 1</p></div>
+<div style="flex:0 0 150px;border:1px solid var(--text-accent);border-radius:var(--radius);padding:8px;background:var(--bg-accent);"><p style="font-size:10px;color:var(--text-accent);font-weight:500;margin:0 0 3px;">ИСПЫТАНИЕ</p><p style="font-size:12px;font-weight:500;margin:0;">Scene 5</p></div>
+</div>
+<p style="font-size:11px;color:var(--text-muted);font-weight:500;margin:0 0 6px;">СТАТУС ПО КНИГАМ</p>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 0;border-bottom:0.5px solid var(--border);"><span style="width:6px;height:6px;border-radius:50%;background:#1D9E75;"></span><span style="width:55px;color:var(--text-secondary);">Книга 1</span><span>Жив, работает в WildMind</span></div>
+<button style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;font-size:13px;border-radius:var(--radius);background:var(--bg-accent);color:var(--text-accent);border:none;margin-top:14px;"><i class="ti ti-sparkles" style="font-size:14px;"></i>Спросить AI про Майкла</button>
+</div>
+<div style="border-top: 0.5px solid var(--border); display: flex;">
+<div style="flex:1;text-align:center;padding:10px 0;color:var(--text-accent);"><i class="ti ti-book-2" style="font-size:20px;display:block;margin:0 auto 2px;"></i><span style="font-size:11px;font-weight:500;">Коллекция</span></div>
+<div style="flex:1;text-align:center;padding:10px 0;color:var(--text-muted);"><i class="ti ti-edit" style="font-size:20px;display:block;margin:0 auto 2px;"></i><span style="font-size:11px;">Редактор</span></div>
+<div style="flex:1;text-align:center;padding:10px 0;color:var(--text-muted);"><i class="ti ti-message-circle" style="font-size:20px;display:block;margin:0 auto 2px;"></i><span style="font-size:11px;">Помощники</span></div>
+</div>
+</div>
+</div>
+
+</body></html>

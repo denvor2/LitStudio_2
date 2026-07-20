@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Desktop matrix</title>
+<style>
+  :root {
+    --surface-2: #ffffff; --surface-1: #f4f3ef; --page-bg: #ece9e2;
+    --border: rgba(20,20,18,0.12); --border-strong: rgba(20,20,18,0.24);
+    --border-danger: rgba(163,45,45,0.4); --border-warning: rgba(133,79,11,0.4);
+    --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-muted: #8a8980;
+    --text-danger: #a32d2d; --text-warning: #854f0b; --text-success: #0f6e56; --text-accent: #185fa5;
+    --bg-accent: #e6f1fb; --bg-danger: #fcebeb; --bg-warning: #faeeda; --bg-success: #eaf3de;
+    --fill-secondary: rgba(20,20,18,0.06); --fill-warning: #ef9f27; --fill-danger: #e24b4a;
+    --radius: 8px; --shadow-md: 0 2px 8px rgba(0,0,0,0.08); --shadow-lg: 0 8px 24px rgba(0,0,0,0.14);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-voice: Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page-bg); font-family: var(--font-sans); color: var(--text-primary); padding: 24px 12px; }
+  button { font-family: var(--font-sans); cursor: pointer; }
+  textarea, input, select { font-family: var(--font-sans); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+
+</head><body>
+
+<div style="background: var(--surface-1); border-radius: 12px; padding: 16px;">
+<div style="background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 18px; padding: 6px 16px; border-bottom: 0.5px solid var(--border); font-size: 12px; color: var(--text-secondary);">
+  <span>Файл</span><span>Редактировать</span><span>Вид</span><span>Руководство</span><span>О программе</span>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 0.5px solid var(--border);">
+  <div style="display: flex; align-items: center; gap: 8px; font-size: 14px;"><span style="font-weight: 500;">Тералия</span><i class="ti ti-chevron-right" style="font-size: 13px; color: var(--text-muted);"></i><span style="font-weight: 500;">Книга 1</span></div>
+  <div style="display: flex; align-items: center; gap: 6px;">
+    <button style="padding: 5px 10px; font-size: 12px; border-radius: var(--radius); background: var(--bg-accent); color: var(--text-accent); border: none;">Планирование</button>
+    <button style="padding: 5px 10px; font-size: 12px; border-radius: var(--radius); background: var(--fill-secondary);">Написание</button>
+    <div style="width: 22px; height: 22px; border-radius: 50%; background: var(--bg-accent); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--text-accent); margin-left: 8px;">N</div>
+    <i class="ti ti-settings" style="font-size: 16px; color: var(--text-secondary);"></i>
+  </div>
+</div>
+<div style="display: flex; min-height: 400px;">
+  <div style="width: 152px; border-right: 0.5px solid var(--border); padding: 10px 0; flex-shrink: 0; display: flex; flex-direction: column;">
+    
+    <div style="padding: 9px 12px 4px; font-size: 11px; color: var(--text-muted); font-weight: 500;">ПЛАНИРОВАНИЕ</div>
+    <div style="padding: 5px 12px; font-size: 12px; font-weight: 500; background: var(--bg-accent); color: var(--text-accent); display: flex; align-items: center; gap: 6px;"><i class="ti ti-grid-dots" style="font-size: 13px;"></i> Матрица</div>
+    <div style="padding: 5px 12px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;"><i class="ti ti-timeline" style="font-size: 13px;"></i> Таймлайн</div>
+    <div style="padding: 5px 12px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;"><i class="ti ti-affiliate" style="font-size: 13px;"></i> Карта связей</div>
+    <div style="padding: 5px 12px; font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;"><i class="ti ti-chart-bar" style="font-size: 13px;"></i> Статистика</div>
+
+    <div style="margin-top: auto; padding: 8px 12px; font-size: 12px; color: var(--text-muted); border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 6px;"><i class="ti ti-trash" style="font-size: 13px;"></i> Корзина</div>
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+<div style="display: flex; align-items: center; padding: 8px 16px; border-bottom: 0.5px solid var(--border);"><span style="font-size: 13px; font-weight: 500;">Матрица романа</span><button style="margin-left: auto; font-size: 12px; padding: 5px 9px; border-radius: var(--radius);">+ Линия</button></div>
+<div style="padding: 12px 16px;">
+<table style="border-collapse: collapse; font-size: 12px; width: 100%;">
+<tr><td style="padding:6px 8px;color:var(--text-muted);border-bottom:0.5px solid var(--border);">№</td><td style="padding:6px 10px;font-weight:500;border-bottom:0.5px solid var(--border);">Майкл/АНБ</td><td style="padding:6px 10px;font-weight:500;border-bottom:0.5px solid var(--border);">Холлоуэй</td><td style="padding:6px 10px;font-weight:500;border-bottom:0.5px solid var(--border);">WildMind</td></tr>
+<tr><td style="padding:6px 8px;color:var(--text-muted);border-bottom:0.5px solid var(--border);">1</td>
+<td style="padding:5px 10px;border-bottom:0.5px solid var(--border);background:var(--bg-accent);color:var(--text-accent);"><i class="ti ti-check" style="font-size:12px;margin-right:4px;"></i>Совещание</td>
+<td style="padding:5px 10px;border-bottom:0.5px solid var(--border);background:var(--bg-accent);color:var(--text-accent);"><i class="ti ti-check" style="font-size:12px;margin-right:4px;"></i>Эксперт</td>
+<td style="padding:5px 10px;border-bottom:0.5px solid var(--border);color:var(--text-muted);">—</td></tr>
+<tr><td style="padding:6px 8px;color:var(--text-muted);">2</td><td style="padding:5px 10px;color:var(--text-muted);">—</td><td style="padding:5px 10px;color:var(--text-muted);">Джордан приходит</td><td style="padding:5px 10px;color:var(--text-muted);">—</td></tr>
+</table>
+</div>
+</div>
+  <div style="width: 40px; border-left: 0.5px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 12px; gap: 10px;"><i class="ti ti-sparkles" style="font-size: 18px; color: var(--text-accent);"></i></div>
+</div>
+</div>
+</div>
+
+</body></html>

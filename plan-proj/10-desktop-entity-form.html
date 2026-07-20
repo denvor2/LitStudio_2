@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Desktop entity form</title>
+<style>
+  :root {
+    --surface-2: #ffffff; --surface-1: #f4f3ef; --page-bg: #ece9e2;
+    --border: rgba(20,20,18,0.12); --border-strong: rgba(20,20,18,0.24);
+    --border-danger: rgba(163,45,45,0.4); --border-warning: rgba(133,79,11,0.4);
+    --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-muted: #8a8980;
+    --text-danger: #a32d2d; --text-warning: #854f0b; --text-success: #0f6e56; --text-accent: #185fa5;
+    --bg-accent: #e6f1fb; --bg-danger: #fcebeb; --bg-warning: #faeeda; --bg-success: #eaf3de;
+    --fill-secondary: rgba(20,20,18,0.06); --fill-warning: #ef9f27; --fill-danger: #e24b4a;
+    --radius: 8px; --shadow-md: 0 2px 8px rgba(0,0,0,0.08); --shadow-lg: 0 8px 24px rgba(0,0,0,0.14);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-voice: Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page-bg); font-family: var(--font-sans); color: var(--text-primary); padding: 24px 12px; }
+  button { font-family: var(--font-sans); cursor: pointer; }
+  textarea, input, select { font-family: var(--font-sans); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+
+</head><body>
+
+<div style="background: var(--surface-1); border-radius: 12px; padding: 16px;">
+<div style="background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 10px; overflow: hidden; padding: 18px 20px; max-width: 480px;">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;"><i class="ti ti-map-pin" style="font-size: 16px; color: var(--text-muted);"></i><span style="font-size: 12px; color: var(--text-muted);">Библия мира › Локации › Новая</span></div>
+<input placeholder="Название" style="width:100%;font-size:16px;font-weight:500;border:none;border-bottom:0.5px solid var(--border);padding:6px 0;margin-bottom:12px;"/>
+<div style="display:flex;gap:10px;margin-bottom:12px;"><input placeholder="Категория" style="flex:1;font-size:13px;"/><select style="flex:1;font-size:13px;"><option>Область действия</option><option>Серия</option><option>Локальная</option></select></div>
+<p style="font-size:11px;color:var(--text-muted);font-weight:500;margin:0 0 4px;">ОПИСАНИЕ</p>
+<textarea placeholder="Что это за место" style="width:100%;min-height:60px;font-size:13px;margin-bottom:12px;"></textarea>
+<p style="font-size:11px;color:var(--text-muted);font-weight:500;margin:0 0 6px;">СВЯЗАННЫЕ СУЩНОСТИ</p>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;"><span style="font-size:12px;padding:3px 10px;border-radius:12px;background:#E1F5EE;color:#04342C;">Холлоуэй · хранитель</span></div>
+<div style="display:flex;gap:10px;"><select style="flex:1;font-size:13px;"><option>Источник — сцена</option></select><select style="flex:1;font-size:13px;"><option>Черновик</option><option>Утверждено</option></select></div>
+</div>
+</div>
+
+</body></html>

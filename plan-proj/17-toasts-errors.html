@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Toasts and errors</title>
+<style>
+  :root {
+    --surface-2: #ffffff; --surface-1: #f4f3ef; --page-bg: #ece9e2;
+    --border: rgba(20,20,18,0.12); --border-strong: rgba(20,20,18,0.24);
+    --border-danger: rgba(163,45,45,0.4); --border-warning: rgba(133,79,11,0.4);
+    --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-muted: #8a8980;
+    --text-danger: #a32d2d; --text-warning: #854f0b; --text-success: #0f6e56; --text-accent: #185fa5;
+    --bg-accent: #e6f1fb; --bg-danger: #fcebeb; --bg-warning: #faeeda; --bg-success: #eaf3de;
+    --fill-secondary: rgba(20,20,18,0.06); --fill-warning: #ef9f27; --fill-danger: #e24b4a;
+    --radius: 8px; --shadow-md: 0 2px 8px rgba(0,0,0,0.08); --shadow-lg: 0 8px 24px rgba(0,0,0,0.14);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-voice: Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page-bg); font-family: var(--font-sans); color: var(--text-primary); padding: 24px 12px; }
+  button { font-family: var(--font-sans); cursor: pointer; }
+  textarea, input, select { font-family: var(--font-sans); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+
+</head><body>
+
+<div style="background: var(--surface-1); border-radius: 12px; padding: 16px;">
+<p style="font-size: 11px; color: var(--text-muted); font-weight: 500; margin: 0 0 8px;">ТОСТ-УВЕДОМЛЕНИЯ</p>
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 320px; margin-bottom: 20px;">
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--radius); background: var(--surface-2); border: 0.5px solid var(--border); box-shadow: var(--shadow-md);"><i class="ti ti-check" style="font-size:15px;color:var(--text-success);"></i><span style="font-size:13px;">Сцена сохранена</span></div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--radius); background: var(--bg-warning); border: 0.5px solid var(--border-warning); box-shadow: var(--shadow-md);"><i class="ti ti-alert-triangle" style="font-size:15px;color:var(--text-warning);"></i><span style="font-size:13px;color:var(--text-warning);">Нет соединения — правки сохраняются локально</span></div>
+<div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--radius); background: var(--bg-danger); border: 0.5px solid var(--border-danger); box-shadow: var(--shadow-md);"><i class="ti ti-x" style="font-size:15px;color:var(--text-danger);"></i><span style="font-size:13px;color:var(--text-danger);">Не удалось экспортировать файл</span></div>
+</div>
+<p style="font-size: 11px; color: var(--text-muted); font-weight: 500; margin: 0 0 8px;">МОДАЛЬНОЕ ОКНО ОШИБКИ</p>
+<div style="min-height: 200px; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 16px;">
+<div style="background: var(--surface-2); border-radius: 12px; padding: 20px; width: 100%; max-width: 300px; text-align: center;">
+<i class="ti ti-cloud-off" style="font-size: 26px; color: var(--text-danger); margin-bottom: 10px;"></i>
+<p style="font-size: 14px; font-weight: 500; margin: 0 0 6px;">Конфликт версий</p>
+<p style="font-size: 12px; color: var(--text-secondary); margin: 0 0 16px;">Эта сцена изменена на другом устройстве.</p>
+<div style="display: flex; gap: 8px;"><button style="flex:1;padding:7px;font-size:12px;border-radius:var(--radius);">Позже</button><button style="flex:1;padding:7px;font-size:12px;border-radius:var(--radius);background:var(--bg-accent);color:var(--text-accent);border:none;">Сравнить</button></div>
+</div>
+</div>
+</div>
+
+</body></html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Mobile actions sheet</title>
+<style>
+  :root {
+    --surface-2: #ffffff; --surface-1: #f4f3ef; --page-bg: #ece9e2;
+    --border: rgba(20,20,18,0.12); --border-strong: rgba(20,20,18,0.24);
+    --border-danger: rgba(163,45,45,0.4); --border-warning: rgba(133,79,11,0.4);
+    --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-muted: #8a8980;
+    --text-danger: #a32d2d; --text-warning: #854f0b; --text-success: #0f6e56; --text-accent: #185fa5;
+    --bg-accent: #e6f1fb; --bg-danger: #fcebeb; --bg-warning: #faeeda; --bg-success: #eaf3de;
+    --fill-secondary: rgba(20,20,18,0.06); --fill-warning: #ef9f27; --fill-danger: #e24b4a;
+    --radius: 8px; --shadow-md: 0 2px 8px rgba(0,0,0,0.08); --shadow-lg: 0 8px 24px rgba(0,0,0,0.14);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-voice: Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page-bg); font-family: var(--font-sans); color: var(--text-primary); padding: 24px 12px; }
+  button { font-family: var(--font-sans); cursor: pointer; }
+  textarea, input, select { font-family: var(--font-sans); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 8px; }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+
+</head><body>
+
+<div style="min-height: 380px; background: rgba(0,0,0,0.45); display: flex; align-items: flex-end; justify-content: center; border-radius: 12px; padding: 12px; max-width: 380px;">
+<div style="width: 100%; background: var(--surface-2); border-radius: 16px 16px 0 0; padding-bottom: 8px;">
+<div style="display: flex; justify-content: center; padding: 8px 0 4px;"><div style="width:36px;height:4px;border-radius:2px;background:var(--border-strong);"></div></div>
+<p style="font-size: 13px; color: var(--text-muted); padding: 6px 16px 10px; margin: 0;">Chapter 1</p>
+<button style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 24px;border:none;background:none;text-align:left;font-size:15px;"><i class="ti ti-pencil" style="font-size:18px;color:var(--text-secondary);"></i>Переименовать</button>
+<button style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 24px;border:none;background:none;text-align:left;font-size:15px;"><i class="ti ti-copy" style="font-size:18px;color:var(--text-secondary);"></i>Дублировать</button>
+<div style="border-top: 0.5px solid var(--border); margin: 6px 16px 0;"></div>
+<button style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 24px;border:none;background:none;text-align:left;font-size:15px;color:var(--text-danger);margin-top:4px;"><i class="ti ti-trash" style="font-size:18px;"></i>Удалить главу</button>
+<div style="padding: 8px 16px 4px;"><button style="width:100%;padding:12px;font-size:15px;font-weight:500;">Отмена</button></div>
+</div>
+</div>
+
+</body></html>
