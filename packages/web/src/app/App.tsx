@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../lib/auth-store';
 import { LoginPage } from '../features/auth/LoginPage';
 import { MainLayout } from '../widgets/layout/MainLayout';
+import { ScenePage } from '../features/editor/ScenePage';
 import { ToastContainer } from '../shared/ui/Toast';
 
 export function App() {
@@ -31,7 +32,8 @@ export function App() {
           <Route index element={<Navigate to="/series" replace />} />
           <Route path="series" element={<div className="p-8"><h1 className="text-2xl font-semibold">Мои серии</h1></div>} />
           <Route path="series/:seriesId" element={<div className="p-8"><h1 className="text-2xl font-semibold">Серия</h1></div>} />
-          <Route path="books/:bookId" element={<div className="p-8"><h1 className="text-2xl font-semibold">Книга</h1></div>} />
+          <Route path="books/:bookId" element={<ScenePage />} />
+          <Route path="books/:bookId/editor" element={<ScenePage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
