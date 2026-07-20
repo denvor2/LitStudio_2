@@ -4,6 +4,9 @@ import { useAuthStore } from '../lib/auth-store';
 import { LoginPage } from '../features/auth/LoginPage';
 import { MainLayout } from '../widgets/layout/MainLayout';
 import { ScenePage } from '../features/editor/ScenePage';
+import { MatrixPage } from '../features/planning/MatrixPage';
+import { TimelinePage } from '../features/planning/TimelinePage';
+import { StatisticsPage } from '../features/planning/StatisticsPage';
 import { ToastContainer } from '../shared/ui/Toast';
 
 export function App() {
@@ -32,8 +35,15 @@ export function App() {
           <Route index element={<Navigate to="/series" replace />} />
           <Route path="series" element={<div className="p-8"><h1 className="text-2xl font-semibold">Мои серии</h1></div>} />
           <Route path="series/:seriesId" element={<div className="p-8"><h1 className="text-2xl font-semibold">Серия</h1></div>} />
+
+          {/* Editor */}
           <Route path="books/:bookId" element={<ScenePage />} />
           <Route path="books/:bookId/editor" element={<ScenePage />} />
+
+          {/* Planning */}
+          <Route path="books/:bookId/planning/matrix" element={<MatrixPage />} />
+          <Route path="books/:bookId/planning/timeline" element={<TimelinePage />} />
+          <Route path="books/:bookId/planning/stats" element={<StatisticsPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
