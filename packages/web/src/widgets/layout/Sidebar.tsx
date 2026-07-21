@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   BookOpen, LayoutGrid, FileText, Globe, Target,
-  Clock, Settings
+  Clock, Settings, Download
 } from 'lucide-react';
+import { ExportDialog } from '../../features/export/ExportDialog';
 
 interface NavItem {
   label: string;
@@ -12,6 +14,7 @@ interface NavItem {
 
 export function Sidebar() {
   const { projectId, bookId } = useParams<{ projectId?: string; bookId?: string }>();
+  const [exportOpen, setExportOpen] = useState(false);
 
   const navigation: NavItem[] = [
     { label: 'Проекты', icon: <BookOpen size={18} />, path: '/projects' },
@@ -34,12 +37,25 @@ export function Sidebar() {
           <NavItemComponent key={i} item={item} />
         ))}
       </div>
-      <div className="border-t border-gray-200 dark:border-gray-700 p-2">
+      <div className="border-t border-gray-200 dark:border-gray-700 p-2 space-y-1">
+        {bookId && (
+          <button
+            onClick={() => setExportOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md w-full"
+          >
+            <Download size={18} />
+            <span>Экспорт</span>
+          </button>
+        )}
         <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md w-full">
           <Settings size={18} />
           <span>Настройки</span>
         </button>
       </div>
+
+      {bookId && (
+        <ExportDialog bookId={bookId} isOpen={exportOpen} onClose={() => setExportOpen(false)} />
+      )}
     </aside>
   );
 }
