@@ -13,6 +13,7 @@ import { outlineRoutes } from './routes/outline.js';
 import { goalRoutes } from './routes/goals.js';
 import { timelineRoutes } from './routes/timeline.js';
 import { commentRoutes } from './routes/comments.js';
+import { aiExpertRoutes } from './routes/aiExperts.js';
 
 const app = Fastify({ logger: true });
 
@@ -35,6 +36,7 @@ await app.register(outlineRoutes, { prefix: '/api/outline' });
 await app.register(goalRoutes, { prefix: '/api/goals' });
 await app.register(timelineRoutes, { prefix: '/api/timeline' });
 await app.register(commentRoutes, { prefix: '/api/comments' });
+await app.register(aiExpertRoutes, { prefix: '/api/ai-experts' });
 
 const port = Number(process.env.PORT) || 3001;
 await app.listen({ port, host: '0.0.0.0' });

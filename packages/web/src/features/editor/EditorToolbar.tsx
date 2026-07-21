@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { ChevronDown, Bold, Italic, Quote, Undo, Redo, Maximize, Minimize, MessageSquare } from 'lucide-react';
+import { ChevronDown, Bold, Italic, Quote, Undo, Redo, Maximize, Minimize, MessageSquare, Bot } from 'lucide-react';
 import { SceneStatus } from '@literary-studio/shared';
 
 interface EditorToolbarProps {
   status: SceneStatus;
   onStatusChange: (status: SceneStatus) => void;
   onToggleComments?: () => void;
+  onToggleAI?: () => void;
   commentsOpen?: boolean;
+  aiOpen?: boolean;
 }
 
 const statusOptions: { value: SceneStatus; label: string; color: string }[] = [
@@ -16,7 +18,7 @@ const statusOptions: { value: SceneStatus; label: string; color: string }[] = [
   { value: 'final', label: 'Финал', color: 'bg-green-500' },
 ];
 
-export function EditorToolbar({ status, onStatusChange, onToggleComments, commentsOpen }: EditorToolbarProps) {
+export function EditorToolbar({ status, onStatusChange, onToggleComments, onToggleAI, commentsOpen, aiOpen }: EditorToolbarProps) {
   const [statusOpen, setStatusOpen] = useState(false);
   const [zenMode, setZenMode] = useState(false);
   const currentStatus = statusOptions.find((s) => s.value === status) || statusOptions[0];
@@ -52,6 +54,15 @@ export function EditorToolbar({ status, onStatusChange, onToggleComments, commen
       <button onClick={toggleZenMode} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400" title="Режим письма">
         {zenMode ? <Minimize size={16} /> : <Maximize size={16} />}
       </button>
+      {onToggleAI && (
+        <button
+          onClick={onToggleAI}
+          className={`p-1.5 rounded ${aiOpen ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+          title="AI-эксперты"
+        >
+          <Bot size={16} />
+        </button>
+      )}
       {onToggleComments && (
         <button
           onClick={onToggleComments}

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { ChapterTree } from './ChapterTree';
@@ -6,8 +6,8 @@ import { EditorToolbar } from './EditorToolbar';
 import { StatsBar } from './StatsBar';
 import { SceneEditor } from './SceneEditor';
 import { CommentsPanel } from '../comments/CommentsPanel';
+import { AIExpertsPanel } from '../ai/AIExpertsPanel';
 import { SceneStatus, AUTHOR_SHEET_CHARS, PAGE_CHARS } from '@literary-studio/shared';
-import { MessageSquare } from 'lucide-react';
 
 interface SceneData {
   id: string;
@@ -25,6 +25,16 @@ export function ScenePage() {
   const [saving, setSaving] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [commentsOpen, setCommentsOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [projectId, setProjectId] = useState<string | null>(null);
+
+  // Load project ID from book
+  useEffect(() => {
+    if (!bookId) return;
+    api.get<{ projectId: string }>(`/books/${bookId}`).then((book) => {
+      setProjectId(book.projectId);
+    }).catch(() => {});
+  }, [bookId]);
 
   const loadScene = useCallback(async (sceneId: string) => {
     try {
@@ -78,16 +88,14 @@ export function ScenePage() {
       <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
         {activeScene ? (
           <>
-            <div className="flex items-center">
-              <div className="flex-1">
-                <EditorToolbar
-                  status={activeScene.status as SceneStatus}
-                  onStatusChange={handleStatusChange}
-                  onToggleComments={() => setCommentsOpen(!commentsOpen)}
-                  commentsOpen={commentsOpen}
-                />
-              </div>
-            </div>
+            <EditorToolbar
+              status={activeScene.status as SceneStatus}
+              onStatusChange={handleStatusChange}
+              onToggleComments={() => { setCommentsOpen(!commentsOpen); setAiOpen(false); }}
+              onToggleAI={() => { setAiOpen(!aiOpen); setCommentsOpen(false); }}
+              commentsOpen={commentsOpen}
+              aiOpen={aiOpen}
+            />
             <SceneEditor
               sceneId={activeScene.id}
               initialContent={activeScene.content || ''}
@@ -111,13 +119,25 @@ export function ScenePage() {
         )}
       </div>
 
-      {/* Comments panel */}
+      {/* Right panels */}
       {activeScene && (
-        <CommentsPanel
-          sceneId={activeScene.id}
-          isOpen={commentsOpen}
-          onClose={() => setCommentsOpen(false)}
-        />
+        <>
+          {commentsOpen && (
+            <CommentsPanel
+              sceneId={activeScene.id}
+              isOpen={commentsOpen}
+              onClose={() => setCommentsOpen(false)}
+            />
+          )}
+          {aiOpen && projectId && (
+            <AIExpertsPanel
+              projectId={projectId}
+              sceneText={activeScene.content || ''}
+              isOpen={aiOpen}
+              onClose={() => setAiOpen(false)}
+            />
+          )}
+        </>
       )}
     </div>
   );
