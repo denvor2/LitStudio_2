@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { ChapterTree } from './ChapterTree';
 import { EditorToolbar } from './EditorToolbar';
 import { StatsBar } from './StatsBar';
+import { SceneEditor } from './SceneEditor';
 import { SceneStatus, AUTHOR_SHEET_CHARS, PAGE_CHARS } from '@literary-studio/shared';
 
 interface SceneData {
@@ -21,7 +22,6 @@ export function ScenePage() {
   const [activeScene, setActiveScene] = useState<SceneData | null>(null);
   const [saving, setSaving] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const editorRef = useRef<HTMLTextAreaElement>(null);
 
   const loadScene = useCallback(async (sceneId: string) => {
     try {
@@ -32,12 +32,10 @@ export function ScenePage() {
     }
   }, []);
 
-  const saveScene = useCallback(async (content: string) => {
+  const saveScene = useCallback(async (content: string, wordCount: number, charCount: number) => {
     if (!activeScene) return;
     setSaving(true);
     try {
-      const wordCount = content.split(/\s+/).filter(Boolean).length;
-      const charCount = content.length;
       await api.put(`/scenes/${activeScene.id}`, { content, wordCount, charCount });
       setActiveScene((prev) => prev ? { ...prev, content, wordCount, charCount } : prev);
     } catch (err) {
@@ -47,8 +45,10 @@ export function ScenePage() {
     }
   }, [activeScene]);
 
-  const handleContentChange = useCallback(
-    debounce((value: string) => saveScene(value), 1000),
+  const handleEditorUpdate = useCallback(
+    debounce((content: string, wordCount: number, charCount: number) => {
+      saveScene(content, wordCount, charCount);
+    }, 2000),
     [saveScene]
   );
 
@@ -74,16 +74,11 @@ export function ScenePage() {
         {activeScene ? (
           <>
             <EditorToolbar status={activeScene.status as SceneStatus} onStatusChange={handleStatusChange} />
-            <div className="flex-1 overflow-y-auto">
-              <textarea
-                ref={editorRef}
-                defaultValue={activeScene.content}
-                onChange={(e) => handleContentChange(e.target.value)}
-                className="w-full h-full px-16 py-12 focus:outline-none resize-none"
-                style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '18px', lineHeight: '1.8' }}
-                placeholder="Начните писать..."
-              />
-            </div>
+            <SceneEditor
+              sceneId={activeScene.id}
+              initialContent={activeScene.content || ''}
+              onUpdate={handleEditorUpdate}
+            />
             <StatsBar
               wordCount={activeScene.wordCount}
               charCount={activeScene.charCount}
