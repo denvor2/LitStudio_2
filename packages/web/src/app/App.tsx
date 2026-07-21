@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../lib/auth-store';
+import { useThemeStore } from '../lib/theme-store';
 import { LoginPage } from '../features/auth/LoginPage';
 import { MainLayout } from '../widgets/layout/MainLayout';
 import { ScenePage } from '../features/editor/ScenePage';
@@ -13,8 +14,12 @@ import { ToastContainer } from '../shared/ui/Toast';
 
 export function App() {
   const { isAuthenticated, loadFromStorage } = useAuthStore();
+  const { loadFromStorage: loadTheme } = useThemeStore();
 
-  useEffect(() => { loadFromStorage(); }, []);
+  useEffect(() => {
+    loadFromStorage();
+    loadTheme();
+  }, []);
 
   if (!isAuthenticated) {
     return (

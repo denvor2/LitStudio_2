@@ -1,20 +1,17 @@
 import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   BookOpen, LayoutGrid, FileText, Globe, Target,
-  Clock, ChevronDown, ChevronRight, Settings
+  Clock, Settings
 } from 'lucide-react';
-import { useState } from 'react';
 
 interface NavItem {
   label: string;
   icon: React.ReactNode;
   path?: string;
-  children?: NavItem[];
 }
 
 export function Sidebar() {
   const { projectId, bookId } = useParams<{ projectId?: string; bookId?: string }>();
-  const base = projectId ? `/projects/${projectId}` : bookId ? `/books/${bookId}` : '';
 
   const navigation: NavItem[] = [
     { label: 'Проекты', icon: <BookOpen size={18} />, path: '/projects' },
@@ -31,14 +28,14 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="w-[250px] border-r border-gray-200 bg-gray-50 flex flex-col overflow-hidden">
+    <aside className="w-[250px] border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-850 flex flex-col overflow-hidden dark:bg-[#1a1b1e]">
       <div className="flex-1 overflow-y-auto py-2 px-2">
         {navigation.map((item, i) => (
           <NavItemComponent key={i} item={item} />
         ))}
       </div>
-      <div className="border-t border-gray-200 p-2">
-        <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md w-full">
+      <div className="border-t border-gray-200 dark:border-gray-700 p-2">
+        <button className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md w-full">
           <Settings size={18} />
           <span>Настройки</span>
         </button>
@@ -54,9 +51,13 @@ function NavItemComponent({ item }: { item: NavItem }) {
   return (
     <Link
       to={item.path || '#'}
-      className={`flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-colors ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700 hover:bg-gray-100'}`}
+      className={`flex items-center gap-2 px-3 py-1.5 text-sm rounded-md transition-colors
+        ${isActive
+          ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium'
+          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+        }`}
     >
-      <span className="text-gray-500">{item.icon}</span>
+      <span className="text-gray-500 dark:text-gray-400">{item.icon}</span>
       <span className="flex-1">{item.label}</span>
     </Link>
   );

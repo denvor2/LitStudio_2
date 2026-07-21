@@ -7,9 +7,13 @@
   --ai-panel-width: 350px;
 }
 
-body {
-  @apply font-sans text-gray-900 bg-white antialiased;
-  margin: 0;
+@layer base {
+  body {
+    @apply font-sans antialiased;
+    @apply text-gray-900 bg-white;
+    @apply dark:text-gray-100 dark:bg-gray-900;
+    margin: 0;
+  }
 }
 
 /* Scrollbar styling */
@@ -21,8 +25,13 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Dark mode transitions */
+.dark * {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }

@@ -61,7 +61,7 @@ export function ScenePage() {
 
   return (
     <div className="flex h-full overflow-hidden">
-      <div className="w-[250px] border-r border-gray-200 bg-gray-50 overflow-y-auto flex-shrink-0">
+      <div className="w-[250px] border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1a1b1e] overflow-y-auto flex-shrink-0">
         <ChapterTree
           bookId={bookId!}
           activeSceneId={activeScene?.id || null}
@@ -70,7 +70,7 @@ export function ScenePage() {
         />
       </div>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
         {activeScene ? (
           <>
             <EditorToolbar status={activeScene.status as SceneStatus} onStatusChange={handleStatusChange} />
@@ -85,10 +85,10 @@ export function ScenePage() {
               authorSheets={Math.round(activeScene.charCount / AUTHOR_SHEET_CHARS * 100) / 100}
               pages={Math.ceil(activeScene.charCount / PAGE_CHARS)}
             />
-            {saving && <div className="px-4 py-1 text-xs text-gray-400 border-t border-gray-100">Сохранение...</div>}
+            {saving && <div className="px-4 py-1 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-800">Сохранение...</div>}
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
+          <div className="flex-1 flex items-center justify-center text-gray-400 dark:text-gray-500">
             <div className="text-center">
               <p className="text-lg">Выберите сцену для редактирования</p>
               <p className="text-sm mt-1">или создайте новую главу</p>
