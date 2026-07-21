@@ -14,6 +14,7 @@ import { goalRoutes } from './routes/goals.js';
 import { timelineRoutes } from './routes/timeline.js';
 import { commentRoutes } from './routes/comments.js';
 import { aiExpertRoutes } from './routes/aiExperts.js';
+import { startWebSocketServer } from './ws-server.js';
 
 const app = Fastify({ logger: true });
 
@@ -39,5 +40,13 @@ await app.register(commentRoutes, { prefix: '/api/comments' });
 await app.register(aiExpertRoutes, { prefix: '/api/ai-experts' });
 
 const port = Number(process.env.PORT) || 3001;
+const wsPort = Number(process.env.WS_PORT) || 3002;
+
+// Start Fastify HTTP server
 await app.listen({ port, host: '0.0.0.0' });
-app.log.info(`Server running on http://localhost:${port}`);
+app.log.info(`HTTP server running on http://localhost:${port}`);
+
+// Start WebSocket server on same HTTP server
+const httpServer = app.server;
+startWebSocketServer(httpServer);
+app.log.info(`WebSocket server running on ws://localhost:${wsPort}`);

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { getSceneText, onYDocChange, loadContentIntoYDoc } from '../../lib/yjs';
+import { connectToRoom, getSceneText, onYDocChange, loadContentIntoYDoc, disconnectFromRoom } from '../../lib/yjs';
 
 interface SceneEditorProps {
   sceneId: string;
@@ -10,19 +10,39 @@ interface SceneEditorProps {
 export function SceneEditor({ sceneId, initialContent, onUpdate }: SceneEditorProps) {
   const editorRef = useRef<HTMLTextAreaElement>(null);
   const lastUpdateRef = useRef<string>('');
+  const connectedRef = useRef<boolean>(false);
 
-  // Load initial content into Yjs
+  // Connect to room and load content
   useEffect(() => {
-    loadContentIntoYDoc(sceneId, initialContent);
-    if (editorRef.current) {
-      editorRef.current.value = initialContent;
-      lastUpdateRef.current = initialContent;
+    // Disconnect from previous room
+    if (connectedRef.current) {
+      disconnectFromRoom(`scene-${sceneId}`);
     }
+
+    // Connect to new room
+    const { doc } = connectToRoom(`scene-${sceneId}`);
+    connectedRef.current = true;
+
+    // Load initial content into Yjs
+    loadContentIntoYDoc(`scene-${sceneId}`, initialContent);
+
+    // Set editor value
+    if (editorRef.current) {
+      const text = getSceneText(`scene-${sceneId}`);
+      editorRef.current.value = text.toString();
+      lastUpdateRef.current = text.toString();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      disconnectFromRoom(`scene-${sceneId}`);
+      connectedRef.current = false;
+    };
   }, [sceneId, initialContent]);
 
   // Subscribe to Yjs changes
   useEffect(() => {
-    const unsubscribe = onYDocChange(sceneId, (content) => {
+    const unsubscribe = onYDocChange(`scene-${sceneId}`, (content) => {
       if (editorRef.current && content !== editorRef.current.value) {
         // Save cursor position
         const start = editorRef.current.selectionStart;
@@ -53,7 +73,7 @@ export function SceneEditor({ sceneId, initialContent, onUpdate }: SceneEditorPr
     const content = editorRef.current.value;
 
     // Update Yjs document (which triggers the observer)
-    const text = getSceneText(sceneId);
+    const text = getSceneText(`scene-${sceneId}`);
     text.delete(0, text.length);
     text.insert(0, content);
   }, [sceneId]);
@@ -81,7 +101,7 @@ export function SceneEditor({ sceneId, initialContent, onUpdate }: SceneEditorPr
         ref={editorRef}
         onChange={handleInput}
         onKeyDown={handleKeyDown}
-        className="w-full h-full px-16 py-12 focus:outline-none resize-none"
+        className="w-full h-full px-16 py-12 focus:outline-none resize-none bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
         style={{
           fontFamily: '"Playfair Display", Georgia, serif',
           fontSize: '18px',
