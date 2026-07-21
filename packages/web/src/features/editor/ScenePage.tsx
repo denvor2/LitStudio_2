@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { ChapterTree } from './ChapterTree';
 import { EditorToolbar } from './EditorToolbar';
 import { StatsBar } from './StatsBar';
 import { SceneEditor } from './SceneEditor';
+import { CommentsPanel } from '../comments/CommentsPanel';
 import { SceneStatus, AUTHOR_SHEET_CHARS, PAGE_CHARS } from '@literary-studio/shared';
+import { MessageSquare } from 'lucide-react';
 
 interface SceneData {
   id: string;
@@ -22,6 +24,7 @@ export function ScenePage() {
   const [activeScene, setActiveScene] = useState<SceneData | null>(null);
   const [saving, setSaving] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [commentsOpen, setCommentsOpen] = useState(false);
 
   const loadScene = useCallback(async (sceneId: string) => {
     try {
@@ -61,6 +64,7 @@ export function ScenePage() {
 
   return (
     <div className="flex h-full overflow-hidden">
+      {/* Left sidebar - chapter tree */}
       <div className="w-[250px] border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1a1b1e] overflow-y-auto flex-shrink-0">
         <ChapterTree
           bookId={bookId!}
@@ -70,10 +74,20 @@ export function ScenePage() {
         />
       </div>
 
+      {/* Main editor area */}
       <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
         {activeScene ? (
           <>
-            <EditorToolbar status={activeScene.status as SceneStatus} onStatusChange={handleStatusChange} />
+            <div className="flex items-center">
+              <div className="flex-1">
+                <EditorToolbar
+                  status={activeScene.status as SceneStatus}
+                  onStatusChange={handleStatusChange}
+                  onToggleComments={() => setCommentsOpen(!commentsOpen)}
+                  commentsOpen={commentsOpen}
+                />
+              </div>
+            </div>
             <SceneEditor
               sceneId={activeScene.id}
               initialContent={activeScene.content || ''}
@@ -96,6 +110,15 @@ export function ScenePage() {
           </div>
         )}
       </div>
+
+      {/* Comments panel */}
+      {activeScene && (
+        <CommentsPanel
+          sceneId={activeScene.id}
+          isOpen={commentsOpen}
+          onClose={() => setCommentsOpen(false)}
+        />
+      )}
     </div>
   );
 }

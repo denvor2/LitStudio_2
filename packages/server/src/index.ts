@@ -12,6 +12,7 @@ import { plotBoardRoutes } from './routes/plotBoard.js';
 import { outlineRoutes } from './routes/outline.js';
 import { goalRoutes } from './routes/goals.js';
 import { timelineRoutes } from './routes/timeline.js';
+import { commentRoutes } from './routes/comments.js';
 
 const app = Fastify({ logger: true });
 
@@ -33,6 +34,7 @@ await app.register(plotBoardRoutes, { prefix: '/api/plot-board' });
 await app.register(outlineRoutes, { prefix: '/api/outline' });
 await app.register(goalRoutes, { prefix: '/api/goals' });
 await app.register(timelineRoutes, { prefix: '/api/timeline' });
+await app.register(commentRoutes, { prefix: '/api/comments' });
 
 const port = Number(process.env.PORT) || 3001;
 await app.listen({ port, host: '0.0.0.0' });

@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { ChevronDown, Bold, Italic, Quote, Undo, Redo, Maximize, Minimize } from 'lucide-react';
+import { ChevronDown, Bold, Italic, Quote, Undo, Redo, Maximize, Minimize, MessageSquare } from 'lucide-react';
 import { SceneStatus } from '@literary-studio/shared';
 
 interface EditorToolbarProps {
   status: SceneStatus;
   onStatusChange: (status: SceneStatus) => void;
+  onToggleComments?: () => void;
+  commentsOpen?: boolean;
 }
 
 const statusOptions: { value: SceneStatus; label: string; color: string }[] = [
@@ -14,7 +16,7 @@ const statusOptions: { value: SceneStatus; label: string; color: string }[] = [
   { value: 'final', label: 'Финал', color: 'bg-green-500' },
 ];
 
-export function EditorToolbar({ status, onStatusChange }: EditorToolbarProps) {
+export function EditorToolbar({ status, onStatusChange, onToggleComments, commentsOpen }: EditorToolbarProps) {
   const [statusOpen, setStatusOpen] = useState(false);
   const [zenMode, setZenMode] = useState(false);
   const currentStatus = statusOptions.find((s) => s.value === status) || statusOptions[0];
@@ -50,6 +52,15 @@ export function EditorToolbar({ status, onStatusChange }: EditorToolbarProps) {
       <button onClick={toggleZenMode} className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400" title="Режим письма">
         {zenMode ? <Minimize size={16} /> : <Maximize size={16} />}
       </button>
+      {onToggleComments && (
+        <button
+          onClick={onToggleComments}
+          className={`p-1.5 rounded ${commentsOpen ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}
+          title="Комментарии"
+        >
+          <MessageSquare size={16} />
+        </button>
+      )}
       <div className="relative">
         <button onClick={() => setStatusOpen(!statusOpen)} className="flex items-center gap-2 px-3 py-1.5 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300">
           <span className={`w-2 h-2 rounded-full ${currentStatus.color}`} />
