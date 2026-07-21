@@ -20,9 +20,7 @@ export async function timelineRoutes(app: FastifyInstance) {
     };
     let order = data.sortOrder;
     if (order === undefined) {
-      const last = await prisma.timelineEvent.findFirst({
-        where: { bookId: data.bookId }, orderBy: { sortOrder: 'desc' },
-      });
+      const last = await prisma.timelineEvent.findFirst({ where: { bookId: data.bookId }, orderBy: { sortOrder: 'desc' } });
       order = (last?.sortOrder ?? -1) + 1;
     }
     return prisma.timelineEvent.create({ data: { ...data, sortOrder: order } });
@@ -30,10 +28,7 @@ export async function timelineRoutes(app: FastifyInstance) {
 
   app.put('/:id', { preHandler: [auth] }, async (request, reply) => {
     const { id } = request.params as { id: string };
-    const data = request.body as Partial<{
-      title: string; description: string; eventDate: string;
-      relativeTime: string; sceneId: string | null; sortOrder: number;
-    }>;
+    const data = request.body as Record<string, unknown>;
     try {
       return await prisma.timelineEvent.update({ where: { id }, data });
     } catch {

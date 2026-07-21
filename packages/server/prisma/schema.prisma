@@ -20,9 +20,11 @@ model User {
   createdAt       DateTime       @default(now()) @map("created_at")
   updatedAt       DateTime       @updatedAt @map("updated_at")
 
-  series          Series[]
+  projects        Project[]
+  collaborators   Collaborator[]
   refreshTokens   RefreshToken[]
-  syncQueue       SyncQueue[]
+  comments        Comment[]
+  versions        Version[]
 
   @@map("users")
 }
@@ -39,32 +41,49 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
-// ===== Series & Books =====
+// ===== Project (top level, replaces Series) =====
 
-model Series {
+model Project {
   id          String   @id @default(uuid()) @db.Uuid
   ownerId     String   @map("owner_id") @db.Uuid
   title       String   @db.VarChar(500)
   description String?  @db.Text
+  settings    Json     @default("{}")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  books       Book[]
-  characters  Character[]
-  locations   Location[]
-  organizations Organization[]
-  rules       Rule[]
-  terms       Term[]
-  connections Connection[]
-  authorStyle AuthorStyle?
+  owner         User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  collaborators Collaborator[]
+  books         Book[]
+  codexEntries  CodexEntry[]
+  relationships Relationship[]
+  goals         Goal[]
+  aiExpertRoles AIExpertRole[]
 
-  @@map("series")
+  @@map("projects")
 }
+
+// ===== Collaborator =====
+
+model Collaborator {
+  id        String   @id @default(uuid()) @db.Uuid
+  projectId String   @map("project_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  role      String   @default("reader") @db.VarChar(20)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@map("collaborators")
+}
+
+// ===== Book =====
 
 model Book {
   id              String   @id @default(uuid()) @db.Uuid
-  seriesId        String   @map("series_id") @db.Uuid
+  projectId       String   @map("project_id") @db.Uuid
   title           String   @db.VarChar(500)
   subtitle        String?  @db.VarChar(500)
   genre           String?  @db.VarChar(100)
@@ -76,21 +95,16 @@ model Book {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  series          Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
-  chapters        Chapter[]
-  ideas           Idea[]
-  plotLines       PlotLine[]
-  matrixCells     MatrixCell[]
-  timelineEvents  TimelineEvent[]
-  mindmapNodes    MindmapNode[]
-  productionAssets ProductionAsset[]
-  publications    Publication[]
-  characterArcs   CharacterArc[]
+  project        Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  chapters       Chapter[]
+  plotArcs       PlotArc[]
+  outlineEntries OutlineEntry[]
+  timelineEvents TimelineEvent[]
 
   @@map("books")
 }
 
-// ===== Chapters & Scenes =====
+// ===== Chapter =====
 
 model Chapter {
   id        String   @id @default(uuid()) @db.Uuid
@@ -100,195 +114,163 @@ model Chapter {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  scenes    Scene[]
+  book   Book    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  scenes Scene[]
 
   @@map("chapters")
 }
 
-model Scene {
-  id                String   @id @default(uuid()) @db.Uuid
-  chapterId         String   @map("chapter_id") @db.Uuid
-  title             String?  @db.VarChar(500)
-  content           Json?    @default("{}")
-  contentPlaintext  String?  @map("content_plaintext") @db.Text
-  charCount         Int      @default(0) @map("char_count")
-  wordCount         Int      @default(0) @map("word_count")
-  status            String   @default("draft") @db.VarChar(20)
-  sortOrder         Int      @default(0) @map("sort_order")
-  tensionScore      Int?     @map("tension_score")
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+// ===== Scene =====
 
-  chapter           Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  matrixCells       MatrixCell[]
-  timelineEvents    TimelineEvent[]
+model Scene {
+  id               String    @id @default(uuid()) @db.Uuid
+  chapterId        String    @map("chapter_id") @db.Uuid
+  title            String?   @db.VarChar(500)
+  content          Json      @default("{}")
+  status           String    @default("draft") @db.VarChar(20)
+  sortOrder        Int       @default(0) @map("sort_order")
+  povCharacterId   String?   @map("pov_character_id") @db.Uuid
+  locationId       String?   @map("location_id") @db.Uuid
+  wordCount        Int       @default(0) @map("word_count")
+  charCount        Int       @default(0) @map("char_count")
+  colorTag         String?   @map("color_tag") @db.VarChar(20)
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  chapter          Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  beats            Beat[]
+  entityLinks      SceneEntityLink[]
+  plotCards        PlotCard[]
+  comments         Comment[]
+  timelineEvents   TimelineEvent[]
 
   @@index([chapterId, sortOrder])
   @@map("scenes")
 }
 
-// ===== World Bible =====
+// ===== Beat =====
 
-model Character {
+model Beat {
   id          String   @id @default(uuid()) @db.Uuid
-  seriesId    String   @map("series_id") @db.Uuid
-  scope       String   @default("series") @db.VarChar(20)
-  bookId      String?  @map("book_id") @db.Uuid
-  name        String   @db.VarChar(200)
-  role        String?  @db.Text
+  sceneId     String   @map("scene_id") @db.Uuid
+  title       String?  @db.VarChar(500)
   description String?  @db.Text
-  nameVariants Json   @default("[]") @map("name_variants")
-  status      String   @default("draft") @db.VarChar(20)
+  sortOrder   Int      @default(0) @map("sort_order")
   createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  series      Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
-  arcs        CharacterArc[]
+  scene Scene @relation(fields: [sceneId], references: [id], onDelete: Cascade)
 
-  @@map("characters")
+  @@map("beats")
 }
 
-model Location {
+// ===== CodexEntry (unified entity) =====
+
+model CodexEntry {
   id                   String   @id @default(uuid()) @db.Uuid
-  seriesId             String   @map("series_id") @db.Uuid
-  scope                String   @default("series") @db.VarChar(20)
-  bookId               String?  @map("book_id") @db.Uuid
+  projectId            String   @map("project_id") @db.Uuid
+  type                 String   @db.VarChar(50)
   name                 String   @db.VarChar(200)
-  category             String?  @db.VarChar(100)
-  description          String?  @db.Text
-  firstMentionSceneId  String?  @map("first_mention_scene_id") @db.Uuid
-  status               String   @default("draft") @db.VarChar(20)
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
-
-  series      Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
-
-  @@map("locations")
-}
-
-model Organization {
-  id                   String   @id @default(uuid()) @db.Uuid
-  seriesId             String   @map("series_id") @db.Uuid
+  attributes           Json     @default("{}")
   scope                String   @default("series") @db.VarChar(20)
-  bookId               String?  @map("book_id") @db.Uuid
-  name                 String   @db.VarChar(200)
-  category             String?  @db.VarChar(100)
-  description          String?  @db.Text
-  firstMentionSceneId  String?  @map("first_mention_scene_id") @db.Uuid
   status               String   @default("draft") @db.VarChar(20)
+  firstMentionSceneId  String?  @map("first_mention_scene_id") @db.Uuid
   createdAt            DateTime @default(now()) @map("created_at")
   updatedAt            DateTime @updatedAt @map("updated_at")
 
-  series      Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  project              Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sourceRelationships  Relationship[]   @relation("SourceEntry")
+  targetRelationships  Relationship[]   @relation("TargetEntry")
+  sceneLinks           SceneEntityLink[]
 
-  @@map("organizations")
+  @@index([projectId, type])
+  @@map("codex_entries")
 }
 
-model Rule {
-  id                   String   @id @default(uuid()) @db.Uuid
-  seriesId             String   @map("series_id") @db.Uuid
-  scope                String   @default("series") @db.VarChar(20)
-  bookId               String?  @map("book_id") @db.Uuid
-  name                 String   @db.VarChar(200)
-  category             String?  @db.VarChar(100)
-  formulation          String   @db.Text
-  exceptions           String?  @db.Text
-  firstMentionSceneId  String?  @map("first_mention_scene_id") @db.Uuid
-  status               String   @default("draft") @db.VarChar(20)
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+// ===== Relationship =====
 
-  series      Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+model Relationship {
+  id              String   @id @default(uuid()) @db.Uuid
+  projectId       String   @map("project_id") @db.Uuid
+  sourceEntryId   String   @map("source_entry_id") @db.Uuid
+  targetEntryId   String   @map("target_entry_id") @db.Uuid
+  label           String?  @db.VarChar(200)
+  description     String?  @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
 
-  @@map("rules")
+  project      Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sourceEntry  CodexEntry  @relation("SourceEntry", fields: [sourceEntryId], references: [id], onDelete: Cascade)
+  targetEntry  CodexEntry  @relation("TargetEntry", fields: [targetEntryId], references: [id], onDelete: Cascade)
+
+  @@map("relationships")
 }
 
-model Term {
-  id                   String   @id @default(uuid()) @db.Uuid
-  seriesId             String   @map("series_id") @db.Uuid
-  scope                String   @default("series") @db.VarChar(20)
-  bookId               String?  @map("book_id") @db.Uuid
-  term                 String   @db.VarChar(200)
-  definition           String   @db.Text
-  synonyms             String[] @default([])
-  category             String?  @db.VarChar(100)
-  firstMentionSceneId  String?  @map("first_mention_scene_id") @db.Uuid
-  status               String   @default("draft") @db.VarChar(20)
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+// ===== SceneEntityLink =====
 
-  series      Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+model SceneEntityLink {
+  id        String   @id @default(uuid()) @db.Uuid
+  sceneId   String   @map("scene_id") @db.Uuid
+  entryId   String   @map("entry_id") @db.Uuid
+  linkType  String   @map("link_type") @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@map("terms")
+  scene Scene      @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  entry CodexEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@map("scene_entity_links")
 }
 
-model Connection {
-  id         String   @id @default(uuid()) @db.Uuid
-  seriesId   String   @map("series_id") @db.Uuid
-  sourceType String   @map("source_type") @db.VarChar(50)
-  sourceId   String   @map("source_id") @db.Uuid
-  targetType String   @map("target_type") @db.VarChar(50)
-  targetId   String   @map("target_id") @db.Uuid
-  label      String?  @db.VarChar(200)
-  createdAt  DateTime @default(now()) @map("created_at")
+// ===== PlotArc (Plot Board column) =====
 
-  series Series @relation(fields: [seriesId], references: [id], onDelete: Cascade)
-
-  @@map("connections")
-}
-
-model CharacterArc {
-  id                    String   @id @default(uuid()) @db.Uuid
-  characterId           String   @map("character_id") @db.Uuid
-  bookId                String   @map("book_id") @db.Uuid
-  sceneId               String?  @map("scene_id") @db.Uuid
-  beatType              String   @map("beat_type") @db.VarChar(20)
-  goal                  String?  @db.Text
-  internalConflict      String?  @map("internal_conflict") @db.Text
-  learned               String?  @db.Text
-  relationToCharacterId String?  @map("relation_to_character_id") @db.Uuid
-  sortOrder             Int      @default(0) @map("sort_order")
-  createdAt             DateTime @default(now()) @map("created_at")
-
-  character  Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  book       Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
-
-  @@map("character_arcs")
-}
-
-// ===== Planning =====
-
-model PlotLine {
+model PlotArc {
   id        String   @id @default(uuid()) @db.Uuid
   bookId    String   @map("book_id") @db.Uuid
   title     String   @db.VarChar(200)
+  color     String?  @db.VarChar(20)
   sortOrder Int      @default(0) @map("sort_order")
   createdAt DateTime @default(now()) @map("created_at")
 
-  book      Book         @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  cells     MatrixCell[]
+  book  Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  cards PlotCard[]
 
-  @@map("plot_lines")
+  @@map("plot_arcs")
 }
 
-model MatrixCell {
-  id             String   @id @default(uuid()) @db.Uuid
-  bookId         String   @map("book_id") @db.Uuid
-  plotLineId     String   @map("plot_line_id") @db.Uuid
-  bitNumber      Int      @map("bit_number")
-  bitDescription String?  @map("bit_description") @db.Text
-  sceneId        String?  @map("scene_id") @db.Uuid
-  status         String   @default("pending") @db.VarChar(20)
-  sortOrder      Int      @default(0) @map("sort_order")
-  createdAt      DateTime @default(now()) @map("created_at")
+// ===== PlotCard (Plot Board card) =====
 
-  book     Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  plotLine PlotLine @relation(fields: [plotLineId], references: [id], onDelete: Cascade)
-  scene    Scene?   @relation(fields: [sceneId], references: [id], onDelete: SetNull)
+model PlotCard {
+  id          String   @id @default(uuid()) @db.Uuid
+  arcId       String   @map("arc_id") @db.Uuid
+  sceneId     String?  @map("scene_id") @db.Uuid
+  title       String   @db.VarChar(500)
+  description String?  @db.Text
+  sortOrder   Int      @default(0) @map("sort_order")
+  color       String?  @db.VarChar(20)
+  createdAt   DateTime @default(now()) @map("created_at")
 
-  @@map("matrix_cells")
+  arc   PlotArc @relation(fields: [arcId], references: [id], onDelete: Cascade)
+  scene Scene?  @relation(fields: [sceneId], references: [id], onDelete: SetNull)
+
+  @@map("plot_cards")
 }
+
+// ===== OutlineEntry =====
+
+model OutlineEntry {
+  id            String   @id @default(uuid()) @db.Uuid
+  bookId        String   @map("book_id") @db.Uuid
+  chapterNumber Int?     @map("chapter_number")
+  sceneNumber   Int?     @map("scene_number")
+  summary       String   @db.Text
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@map("outline_entries")
+}
+
+// ===== TimelineEvent =====
 
 model TimelineEvent {
   id           String   @id @default(uuid()) @db.Uuid
@@ -307,106 +289,61 @@ model TimelineEvent {
   @@map("timeline_events")
 }
 
-model MindmapNode {
-  id         String   @id @default(uuid()) @db.Uuid
-  bookId     String   @map("book_id") @db.Uuid
-  entityType String   @map("entity_type") @db.VarChar(50)
-  entityId   String   @map("entity_id") @db.Uuid
-  x          Float    @default(0)
-  y          Float    @default(0)
-  createdAt  DateTime @default(now()) @map("created_at")
+// ===== Goal =====
 
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+model Goal {
+  id           String   @id @default(uuid()) @db.Uuid
+  projectId    String   @map("project_id") @db.Uuid
+  type         String   @db.VarChar(20)
+  targetWords  Int      @map("target_words")
+  deadline     DateTime?
+  currentWords Int      @default(0) @map("current_words")
+  streak       Int      @default(0)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  @@map("mindmap_nodes")
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("goals")
 }
 
-// ===== Ideas =====
+// ===== Comment =====
 
-model Idea {
+model Comment {
   id        String   @id @default(uuid()) @db.Uuid
-  bookId    String   @map("book_id") @db.Uuid
-  title     String?  @db.VarChar(500)
-  content   String?  @db.Text
-  tags      String[] @default([])
+  sceneId   String?  @map("scene_id") @db.Uuid
+  entryId   String?  @map("entry_id") @db.Uuid
+  authorId  String   @map("author_id") @db.Uuid
+  content   String   @db.Text
+  position  Json     @default("{}")
+  resolved  Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  scene  Scene?  @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+  author User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  @@map("ideas")
+  @@map("comments")
 }
 
-// ===== Author Style =====
+// ===== AIExpertRole =====
 
-model AuthorStyle {
-  id              String   @id @default(uuid()) @db.Uuid
-  seriesId        String   @unique @map("series_id") @db.Uuid
-  pov             String?  @db.Text
-  tonality        String?  @db.Text
-  punctuationRules Json   @default("[]") @map("punctuation_rules")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-
-  series   Series          @relation(fields: [seriesId], references: [id], onDelete: Cascade)
-  stopList StopListEntry[]
-
-  @@map("author_style")
-}
-
-model StopListEntry {
+model AIExpertRole {
   id         String   @id @default(uuid()) @db.Uuid
-  styleId    String   @map("style_id") @db.Uuid
-  phrase     String   @db.VarChar(500)
-  suggestion String?  @db.Text
-  example    String?  @db.Text
+  projectId  String   @map("project_id") @db.Uuid
+  name       String   @db.VarChar(200)
+  prompt     String   @db.Text
+  isBuiltin  Boolean  @default(false) @map("is_builtin")
+  quickActions Json  @default("[]") @map("quick_actions")
   createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
-  style AuthorStyle @relation(fields: [styleId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  @@map("stop_list_entries")
+  @@map("ai_expert_roles")
 }
 
-// ===== Production =====
-
-model ProductionAsset {
-  id        String   @id @default(uuid()) @db.Uuid
-  bookId    String   @map("book_id") @db.Uuid
-  assetType String   @map("asset_type") @db.VarChar(50)
-  title     String?  @db.VarChar(500)
-  fileUrl   String?  @map("file_url") @db.Text
-  filePath  String?  @map("file_path") @db.VarChar(500)
-  version   Int      @default(1)
-  metadata  Json     @default("{}")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
-
-  @@map("production_assets")
-}
-
-// ===== Publication =====
-
-model Publication {
-  id            String    @id @default(uuid()) @db.Uuid
-  bookId        String    @map("book_id") @db.Uuid
-  platform      String    @db.VarChar(100)
-  status        String    @default("draft") @db.VarChar(30)
-  seoTitle      String?   @map("seo_title") @db.VarChar(500)
-  seoDescription String? @map("seo_description") @db.Text
-  seoKeywords   String[]  @default([]) @map("seo_keywords")
-  notes         String?   @db.Text
-  publishedAt   DateTime? @map("published_at")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
-
-  @@map("publications")
-}
-
-// ===== Versions =====
+// ===== Version =====
 
 model Version {
   id         String   @id @default(uuid()) @db.Uuid
@@ -414,7 +351,10 @@ model Version {
   entityId   String   @map("entity_id") @db.Uuid
   snapshot   Json
   source     String   @db.VarChar(20)
+  authorId   String?  @map("author_id") @db.Uuid
   createdAt  DateTime @default(now()) @map("created_at")
+
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
   @@index([entityType, entityId, createdAt(sort: Desc)])
   @@map("versions")
@@ -432,35 +372,4 @@ model Trash {
   expiresAt  DateTime? @map("expires_at")
 
   @@map("trash")
-}
-
-// ===== Sync =====
-
-model SyncQueue {
-  id              String   @id @default(uuid()) @db.Uuid
-  userId          String   @map("user_id") @db.Uuid
-  entityType      String   @map("entity_type") @db.VarChar(50)
-  entityId        String   @map("entity_id") @db.Uuid
-  action          String   @db.VarChar(10)
-  payload         Json
-  clientTimestamp DateTime @map("client_timestamp")
-  synced          Boolean  @default(false)
-  syncedAt        DateTime? @map("synced_at")
-  createdAt       DateTime @default(now()) @map("created_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sync_queue")
-}
-
-model ChangeLog {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String?  @map("user_id") @db.Uuid
-  entityType String   @map("entity_type") @db.VarChar(50)
-  entityId   String   @map("entity_id") @db.Uuid
-  action     String   @db.VarChar(10)
-  diff       Json
-  createdAt  DateTime @default(now()) @map("created_at")
-
-  @@map("change_log")
 }

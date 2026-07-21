@@ -10,15 +10,38 @@ export interface User {
   updatedAt: Date;
 }
 
-// ===== Series =====
+// ===== Project (was Series) =====
 
-export interface Series {
+export interface Project {
   id: string;
   ownerId: string;
   title: string;
   description: string | null;
+  settings: ProjectSettings;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ProjectSettings {
+  font?: string;
+  fontSize?: number;
+  columnWidth?: number;
+  theme?: 'light' | 'dark';
+  dailyGoal?: number;
+  weeklyGoal?: number;
+}
+
+// ===== Collaborator =====
+
+export type CollaboratorRole = 'owner' | 'editor' | 'commenter' | 'reader';
+
+export interface Collaborator {
+  id: string;
+  projectId: string;
+  userId: string;
+  role: CollaboratorRole;
+  user?: User;
+  createdAt: Date;
 }
 
 // ===== Book =====
@@ -27,7 +50,7 @@ export type BookStatus = 'draft' | 'in_progress' | 'completed';
 
 export interface Book {
   id: string;
-  seriesId: string;
+  projectId: string;
   title: string;
   subtitle: string | null;
   genre: string | null;
@@ -59,157 +82,159 @@ export interface Scene {
   id: string;
   chapterId: string;
   title: string | null;
-  content: unknown; // ProseMirror/TipTap JSON
-  contentPlaintext: string | null;
-  charCount: number;
-  wordCount: number;
+  content: unknown; // Yjs JSON
   status: SceneStatus;
   sortOrder: number;
-  tensionScore: number | null;
+  povCharacterId: string | null;
+  locationId: string | null;
+  wordCount: number;
+  charCount: number;
+  colorTag: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// ===== World Bible =====
+// ===== Beat =====
 
-export type EntityScope = 'series' | 'local';
-export type EntityStatus = 'draft' | 'approved';
-
-export interface NameVariant {
-  name: string;
-  context: string;
-}
-
-export interface Character {
+export interface Beat {
   id: string;
-  seriesId: string;
-  scope: EntityScope;
-  bookId: string | null;
-  name: string;
-  role: string | null;
+  sceneId: string;
+  title: string | null;
   description: string | null;
-  nameVariants: NameVariant[];
-  status: EntityStatus;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Location {
-  id: string;
-  seriesId: string;
-  scope: EntityScope;
-  bookId: string | null;
-  name: string;
-  category: string | null;
-  description: string | null;
-  firstMentionSceneId: string | null;
-  status: EntityStatus;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Organization {
-  id: string;
-  seriesId: string;
-  scope: EntityScope;
-  bookId: string | null;
-  name: string;
-  category: string | null;
-  description: string | null;
-  firstMentionSceneId: string | null;
-  status: EntityStatus;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Rule {
-  id: string;
-  seriesId: string;
-  scope: EntityScope;
-  bookId: string | null;
-  name: string;
-  category: string | null;
-  formulation: string;
-  exceptions: string | null;
-  firstMentionSceneId: string | null;
-  status: EntityStatus;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface Term {
-  id: string;
-  seriesId: string;
-  scope: EntityScope;
-  bookId: string | null;
-  term: string;
-  definition: string;
-  synonyms: string[];
-  category: string | null;
-  firstMentionSceneId: string | null;
-  status: EntityStatus;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// ===== Connections (Mindmap) =====
-
-export type EntityType = 'character' | 'location' | 'organization';
-
-export interface Connection {
-  id: string;
-  seriesId: string;
-  sourceType: EntityType;
-  sourceId: string;
-  targetType: EntityType;
-  targetId: string;
-  label: string | null;
-  createdAt: Date;
-}
-
-// ===== Character Arc =====
-
-export type BeatType = 'setup' | 'trial' | 'turning_point' | 'resolution';
-
-export interface CharacterArc {
-  id: string;
-  characterId: string;
-  bookId: string;
-  sceneId: string | null;
-  beatType: BeatType;
-  goal: string | null;
-  internalConflict: string | null;
-  learned: string | null;
-  relationToCharacterId: string | null;
   sortOrder: number;
   createdAt: Date;
 }
 
-// ===== Planning: Matrix =====
+// ===== CodexEntry (unified entity) =====
 
-export interface PlotLine {
+export type CodexEntryType =
+  | 'character'
+  | 'location'
+  | 'object'
+  | 'faction'
+  | 'language'
+  | 'rule'
+  | 'term'
+  | 'custom';
+
+export type CodexEntryScope = 'series' | 'local';
+export type CodexEntryStatus = 'draft' | 'approved';
+
+export interface CodexEntry {
+  id: string;
+  projectId: string;
+  type: CodexEntryType;
+  name: string;
+  attributes: Record<string, unknown>;
+  scope: CodexEntryScope;
+  status: CodexEntryStatus;
+  firstMentionSceneId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Predefined attribute schemas for common types
+export interface CharacterAttributes {
+  role?: string;
+  description?: string;
+  appearance?: string;
+  personality?: string;
+  goal?: string;
+  conflict?: string;
+  nameVariants?: { name: string; context: string }[];
+}
+
+export interface LocationAttributes {
+  description?: string;
+  category?: string;
+  parentId?: string; // for nesting: country → city → building
+}
+
+export interface ObjectAttributes {
+  description?: string;
+  category?: string;
+}
+
+export interface FactionAttributes {
+  description?: string;
+  category?: string;
+}
+
+export interface RuleAttributes {
+  formulation?: string;
+  exceptions?: string;
+  category?: string;
+}
+
+export interface TermAttributes {
+  definition?: string;
+  synonyms?: string[];
+  category?: string;
+}
+
+// ===== Relationship =====
+
+export interface Relationship {
+  id: string;
+  projectId: string;
+  sourceEntryId: string;
+  targetEntryId: string;
+  label: string | null;
+  description: string | null;
+  createdAt: Date;
+}
+
+// ===== SceneEntityLink =====
+
+export type SceneLinkType = 'mention' | 'pov' | 'location' | 'appears';
+
+export interface SceneEntityLink {
+  id: string;
+  sceneId: string;
+  entryId: string;
+  linkType: SceneLinkType;
+  createdAt: Date;
+}
+
+// ===== PlotArc (Plot Board column) =====
+
+export interface PlotArc {
   id: string;
   bookId: string;
   title: string;
+  color: string | null;
   sortOrder: number;
   createdAt: Date;
 }
 
-export type CellStatus = 'pending' | 'written' | 'linked' | 'not_participating';
+// ===== PlotCard (Plot Board card) =====
 
-export interface MatrixCell {
+export interface PlotCard {
+  id: string;
+  arcId: string;
+  sceneId: string | null;
+  title: string;
+  description: string | null;
+  sortOrder: number;
+  color: string | null;
+  createdAt: Date;
+  scene?: Scene | null;
+}
+
+// ===== OutlineEntry =====
+
+export interface OutlineEntry {
   id: string;
   bookId: string;
-  plotLineId: string;
-  bitNumber: number;
-  bitDescription: string | null;
-  sceneId: string | null;
-  status: CellStatus;
+  chapterNumber: number | null;
+  sceneNumber: number | null;
+  summary: string;
   sortOrder: number;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-// ===== Planning: Timeline =====
+// ===== TimelineEvent =====
 
 export interface TimelineEvent {
   id: string;
@@ -223,93 +248,57 @@ export interface TimelineEvent {
   createdAt: Date;
 }
 
-// ===== Planning: Mindmap Nodes =====
+// ===== Goal =====
 
-export interface MindmapNode {
+export type GoalType = 'daily' | 'weekly' | 'deadline';
+
+export interface Goal {
   id: string;
-  bookId: string;
-  entityType: EntityType;
-  entityId: string;
-  x: number;
-  y: number;
-  createdAt: Date;
-}
-
-// ===== Ideas =====
-
-export interface Idea {
-  id: string;
-  bookId: string;
-  title: string | null;
-  content: string | null;
-  tags: string[];
+  projectId: string;
+  type: GoalType;
+  targetWords: number;
+  deadline: Date | null;
+  currentWords: number;
+  streak: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// ===== Author Style =====
+// ===== Comment =====
 
-export interface PunctuationRule {
+export interface Comment {
+  id: string;
+  sceneId: string | null;
+  entryId: string | null;
+  authorId: string;
+  content: string;
+  position: unknown; // JSON position in document
+  resolved: boolean;
+  author?: User;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ===== AIExpertRole =====
+
+export interface AIExpertRole {
+  id: string;
+  projectId: string;
   name: string;
-  description: string;
-  example: string;
-}
-
-export interface AuthorStyle {
-  id: string;
-  seriesId: string;
-  pov: string | null;
-  tonality: string | null;
-  punctuationRules: PunctuationRule[];
+  prompt: string;
+  isBuiltin: boolean;
+  quickActions: QuickAction[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface StopListEntry {
+export interface QuickAction {
   id: string;
-  styleId: string;
-  phrase: string;
-  suggestion: string | null;
-  example: string | null;
-  createdAt: Date;
+  label: string;
+  prompt: string;
 }
 
-// ===== Production =====
-
-export type AssetType = 'cover' | 'trailer_prompt' | 'tts' | 'merch';
-
-export interface ProductionAsset {
-  id: string;
-  bookId: string;
-  assetType: AssetType;
-  title: string | null;
-  fileUrl: string | null;
-  filePath: string | null;
-  version: number;
-  metadata: Record<string, unknown>;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// ===== Publication =====
-
-export type PublicationStatus = 'draft' | 'submitted' | 'published' | 'unpublished';
-
-export interface Publication {
-  id: string;
-  bookId: string;
-  platform: string;
-  status: PublicationStatus;
-  seoTitle: string | null;
-  seoDescription: string | null;
-  seoKeywords: string[];
-  notes: string | null;
-  publishedAt: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// ===== Versions =====
+// ===== Version =====
 
 export type VersionSource = 'autosave' | 'status_change' | 'app_close' | 'manual';
 
@@ -319,39 +308,11 @@ export interface Version {
   entityId: string;
   snapshot: unknown;
   source: VersionSource;
+  authorId: string | null;
   createdAt: Date;
 }
 
-// ===== Trash =====
-
-export interface TrashEntry {
-  id: string;
-  entityType: string;
-  entityId: string;
-  entityData: unknown;
-  deletedBy: string | null;
-  createdAt: Date;
-  expiresAt: Date | null;
-}
-
-// ===== Sync =====
-
-export type SyncAction = 'create' | 'update' | 'delete';
-
-export interface SyncQueueEntry {
-  id: string;
-  userId: string;
-  entityType: string;
-  entityId: string;
-  action: SyncAction;
-  payload: unknown;
-  clientTimestamp: Date;
-  synced: boolean;
-  syncedAt: Date | null;
-  createdAt: Date;
-}
-
-// ===== API Response Types =====
+// ===== API Types =====
 
 export interface PaginatedResponse<T> {
   data: T[];
